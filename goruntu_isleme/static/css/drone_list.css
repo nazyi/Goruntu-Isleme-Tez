@@ -1,0 +1,160 @@
+
+/* Genel Tasarım */
+body {
+    background-color: #282828;
+    margin: 0;
+    padding: 0;
+    font-family: 'Electrolize', sans-serif;
+}
+:root {
+    --primary-color: #212121; /* Koyu gri ton */
+    --secondary-color: #34495e; /* Daha koyu gri mavi */
+    --accent-color: #9b59b6; /* Drone temalı mor renk */
+    --background-color: #1e1e1e; /* Koyu arka plan */
+    --text-color: #ecf0f1; /* Beyaz metin */
+    --button-color: #8e44ad; /* Buton arka planı */
+}
+
+/* Başlık */
+h1 {
+    font-size: 2.5rem;
+    color: var(--text-color); /* Beyaz başlık */
+    text-align: center;
+    margin-bottom: 50px;
+    padding-top: 60px;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+
+/* Kartların Temel Tasarımı */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Daha belirgin gölge */
+    width: 100%;
+    max-width: 350px;
+    margin: 20px;
+    background: linear-gradient(to bottom right, #282837, #9b59b6);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.3s ease;
+}
+
+/* Kart Hover Efekti */
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Card Fotoğraf */
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+/* Card Başlık */
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--accent-color); /* Drone temalı mor renk */
+}
+
+/* Card Body */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    flex-grow: 1;
+    background-color: #282837; /* Koyu zemin */
+    border-radius: 0 0 15px 15px;
+    color: var(--text-color); /* Beyaz metin */
+}
+
+/* Listelerin Düzenlenmesi */
+.card-body ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Listelerin hizalanması */
+.card-body li {
+    padding: 12px 0;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #34495e; /* Koyu gri sınır */
+}
+
+/* Listelerin stilini düzenleme */
+.card-body li strong {
+    font-weight: 600;
+    color: var(--text-color); /* Beyaz metin */
+}
+
+/* Card Footer ve Buton */
+.card-footer {
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* Daha Profesyonel Buton */
+.card-footer .btn {
+    width: 250px;
+    padding: 12px;
+    font-size: 1.1rem;
+    background-color: #2f2f5f; /* Buton arka planı */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.card-footer .btn:hover {
+    background-color: #9b59b6; /* Hoverda aynı mor tonu */
+    transform: scale(1.05);
+}
+
+/* Scroll Animasyonu: Sayfada aşağı kaydırıldıkça kartlar görünür */
+.card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 200px;
+    }
+
+    .card-body p {
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Kart görünürlük animasyonu */
+.card {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Kart görünür hale geldiğinde */
+.card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

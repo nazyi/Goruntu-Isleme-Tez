@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı Takip</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <link rel="stylesheet" href="{% static 'css/canli_takip.css' %}">
+    <style>
+        body {
+            text-align: center;
+        }
+        video, canvas {
+            border: 1px solid black;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Canlı Nesne Takibi</h1>
+    <video id="videoPlayer" width="640" height="480" autoplay></video>
+    <canvas id="overlayCanvas" width="640" height="480"></canvas>
+
+    <script>
+        const video = document.getElementById('videoPlayer');
+        const canvas = document.getElementById('overlayCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Kamera Açma
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    video.play();
+                    detectObjects(); // Nesne tespiti başlatılıyor
+                };
+            } catch (err) {
+                alert("Kamera erişimi sağlanamadı. Lütfen izin verin.");
+                console.error(err);
+            }
+        }
+
+        // Nesne Tespiti
+        async function detectObjects() {
+            const model = await cocoSsd.load(); // COCO-SSD modelini yükle
+            console.log("Model yüklendi!");
+
+            async function detect() {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const predictions = await model.detect(video);
+
+                // Tespit edilen nesneleri çiz
+                predictions.forEach(prediction => {
+                    const [x, y, width, height] = prediction.bbox;
+                    ctx.beginPath();
+                    ctx.rect(x, y, width, height);
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = "green";
+                    ctx.fillStyle = "green";
+                    ctx.stroke();
+                    ctx.fillText(
+                        `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
+                        x,
+                        y > 10 ? y - 5 : 10
+                    );
+                });
+
+                requestAnimationFrame(detect); // Döngü devam ediyor
+            }
+
+            detect();
+        }
+
+        // Kamera başlatılıyor
+        startCamera();
+    </script>
+</body>
+</html>

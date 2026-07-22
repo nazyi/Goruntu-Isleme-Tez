@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dronelar</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/drone_list.css' %}">
+</head>
+
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Dronelar</h1>
+        <div class="row">
+            {% for drone in drones %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-light rounded">
+                    <img src="{{ drone.photo.url }}" class="card-img-top" alt="{{ drone.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-center ">{{ drone.name }}</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Güç Türü:</strong> {{ drone.guc_turu }}</p>
+                                <p><strong>Uçuş Menzili:</strong> {{ drone.flight_range }} </p>
+                                <p><strong>Taşınabilir Faydalı Yük:</strong> {{ drone.payload_capacity }} </p>
+                                <p><strong>Sıcaklık:</strong> {{ drone.sicaklik }} </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Kamera Türü:</strong> {{ drone.camera_type }}</p>
+                                <p><strong>İletim Aralığı:</strong> {{ drone.iletim_araligi }} </p>
+                                <p><strong>Maksimum Uçuş Süresi:</strong> {{ drone.max_ucus_sure }} </p>
+                                <p><strong>Koruma Derecesi:</strong> {{ drone.koruma_derecesi }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn">Daha Fazla Bilgi</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Scroll animasyonu: Sayfada aşağı kaydırıldıkça kartlar görünür
+        document.addEventListener("DOMContentLoaded", function () {
+            const cards = document.querySelectorAll('.card');
+            function checkVisibility() {
+                const windowHeight = window.innerHeight;
+                cards.forEach(card => {
+                    const cardPosition = card.getBoundingClientRect().top;
+                    if (cardPosition < windowHeight * 0.8) {  // Sayfanın %80'ine geldiğinde kartı göster
+                        card.classList.add('visible');
+                    }
+                });
+            }
+
+            // Sayfa kaydırıldıkça kontrol et
+            window.addEventListener('scroll', checkVisibility);
+            // Sayfa yüklendiğinde kontrol et
+            checkVisibility();
+        });
+    </script>
+</body>
+
+</html>

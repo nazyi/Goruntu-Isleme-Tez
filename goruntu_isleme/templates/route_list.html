@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Güzergahlar</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{% static 'css/route_list.css' %}">
+    
+</head>
+<body>
+    <h1>Kaydedilen Güzergahlar</h1>
+    <div id="routes-container">
+        {% for route in routes %}
+        <div class="route-card" id="route-{{ route.id }}">
+            <h2>{{ route.name }}</h2>
+            <p><strong>Kaydedilme Zamanı:</strong> {{ route.created_at }}</p>
+
+            <!-- Görüntüle Butonu -->
+            <button class="view-map-btn" data-route-id="{{ route.id }}" data-route-coordinates="{{ route.coordinates|escape }}">Görüntüle</button>
+            <!-- Silme Butonu -->
+            <button class="delete-button" data-route-id="{{ route.id }}">Sil</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal (Harita görüntüleme) -->
+    <div id="mapModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalMap" style="height: 500px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Modal açma
+        var modal = document.getElementById("mapModal");
+        var modalMap = document.getElementById("modalMap");
+        var closeBtn = document.getElementsByClassName("close")[0];
+
+        // "Görüntüle" butonuna tıklanınca haritayı göster
+        $(".view-map-btn").click(function() {
+            var routeCoordinates = JSON.parse($(this).attr("data-route-coordinates"));
+            modal.style.display = "block";
+
+            // Haritayı modal içinde görüntüleyelim
+            var map = L.map(modalMap).setView([routeCoordinates[0][0], routeCoordinates[0][1]], 6);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Güzergahı harita üzerinde çizelim
+            L.polyline(routeCoordinates, {color: 'blue'}).addTo(map);
+        });
+
+        // Modal kapatma
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+            modalMap.innerHTML = ''; // Haritayı sıfırlama
+        }
+
+        // Modal dışına tıklandığında kapatma
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                modalMap.innerHTML = ''; // Haritayı sıfırlama
+            }
+        }
+
+        // Silme butonuna tıklama işlemi
+        $(".delete-button").click(function() {
+            var routeId = $(this).data("route-id");
+            $.ajax({
+                url: '/delete-route/' + routeId + '/',
+                method: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    // Başarıyla silindiğinde, kartı sayfadan kaldır
+                    $("#route-" + routeId).remove();
+                    alert("Güzergah silindi.");
+                },
+                error: function(error) {
+                    alert("Güzergah silinemedi.");
+                }
+            });
+        });
+
+    
+    </script>
+</body>
+</html>

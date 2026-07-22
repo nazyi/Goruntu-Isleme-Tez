@@ -1,0 +1,156 @@
+/* Genel Stil */
+body {
+    background-color: #1f1f2e; /* Koyu arka plan */
+    color: #ffffff; /* Beyaz metin */
+    font-family: 'Electrolize', sans-serif; /* Modern font */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    text-align: center;
+}
+
+/* Başlık */
+h1 {
+    color: #9b59b6; /* Mor başlık */
+    font-size: 2rem;
+    margin-top: 30px;
+}
+
+/* Harita Konteyneri */
+#map {
+    width: 80%;
+    height: 600px;
+    margin: 30px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Kartlar Konteyneri */
+#routes-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    width: 80%;
+}
+
+/* Kart Stili */
+.route-card {
+    background-color: #2c2c3a; /* Kart arka planı */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 15px;
+    width: 300px;
+    transition: transform 0.3s ease;
+    color: #ffffff;
+}
+
+.route-card:hover {
+    transform: scale(1.05); /* Hover efektiyle kartı biraz büyüt */
+}
+
+.route-card h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #9b59b6; /* Mor başlık */
+}
+
+.route-card p {
+    font-size: 14px;
+    color: #dddddd;
+}
+
+.route-card p strong {
+    color: #9b59b6; /* Mor vurgu */
+}
+
+/* Modal için stil */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #2c2c3a;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    height: 80%;
+    color: white;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    padding: 10px;
+}
+
+/* Buton Stili */
+button {
+    background-color: #9b59b6; /* Mor buton */
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #7d3c98; /* Daha koyu mor */
+}
+
+/* Silme Butonu */
+.delete-button {
+    background-color: #e74c3c; /* Kırmızı silme butonu */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    #map {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .route-card {
+        width: 90%;
+    }
+
+    button {
+        width: 100%;
+    }
+}

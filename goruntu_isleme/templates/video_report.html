@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Raporu</title>
+    <link rel="stylesheet" href="{% static 'css/video_report.css' %}">
+    <script>
+        let currentDetection = null;
+        let allDetections = [];
+
+        function drawRectangle(ctx, x, y, w, h) {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Her zaman tüm kutuları yeniden çiz
+            // Kutuları çizerken mevcut tüm nesneleri çizin
+            allDetections.forEach(detection => {
+                ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = detection.color;
+                ctx.rect(detection.x, detection.y, detection.w, detection.h);
+                ctx.stroke();
+                ctx.font = "16px Arial";
+                ctx.fillStyle = detection.color;
+                ctx.fillText(detection.label, detection.x, detection.y - 10);
+            });
+        }
+
+        function seekToTime(videoId, time, detection) {
+            const video = document.getElementById(videoId);
+            video.currentTime = time;
+            video.play();
+            currentDetection = detection;
+        }
+
+        function setupCanvas(videoId, canvasId) {
+            const video = document.getElementById(videoId);
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext("2d");
+
+            canvas.width = video.offsetWidth;
+            canvas.height = video.offsetHeight;
+
+            video.addEventListener("timeupdate", () => {
+                // Zaman güncellenince tüm kutuları çiz
+                drawRectangle(ctx, 0, 0, 0, 0);
+            });
+        }
+
+        function addDetection(detection) {
+            allDetections.push(detection);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setupCanvas("videoPlayer", "videoCanvas");
+        });
+    </script>
+</head>
+<body>
+    <h1>Video Raporu</h1>
+    <video width="600" controls>
+        <source src="{{ processed_videos_path }}" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+
+    <h2>Etiketler</h2>
+    <ul>
+        {% for label, data in label_data.items %}
+            <li>{{ label }}:
+                <ul>
+                    {% for item in data %}
+                        <li>Süre: {{ item.timestamp }} saniye, Koordinatlar: {{ item.coordinates }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Etiket Dağılımı</h2>
+    <img src="data:image/png;base64,{{ pie_chart_data }}" alt="Etiket Dağılımı">
+
+</body>
+</html>

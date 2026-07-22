@@ -1,0 +1,137 @@
+/* Genel Stil */
+body {
+    background-color: #1f1f2e; /* Koyu arka plan */
+    color: #ffffff; /* Beyaz metin */
+    font-family: 'Electrolize', sans-serif; /* Modern font */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    text-align: center;
+}
+
+/* Başlık */
+h1 {
+    color: #9b59b6; /* Mor başlık */
+    font-size: 2rem;
+    margin-top: 30px;
+}
+
+/* Harita Konteyneri */
+#map {
+    width: 80%;
+    height: 600px;
+    margin: 30px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Kartlar Konteyneri */
+#cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    width: 80%;
+}
+
+/* Kart Stili */
+.card {
+    background-color: #2c2c3a; /* Kart arka planı */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 15px;
+    width: 300px;
+    transition: transform 0.3s ease;
+    color: #ffffff;
+}
+
+.card:hover {
+    transform: scale(1.05); /* Hover efektiyle kartı biraz büyüt */
+}
+
+.card-header {
+    font-size: 18px;
+    font-weight: bold;
+    color: #9b59b6; /* Mor başlık */
+}
+
+.card-body {
+    font-size: 14px;
+    color: #dddddd;
+}
+
+.card-body p {
+    margin-bottom: 10px;
+}
+
+.card-body strong {
+    color: #9b59b6; /* Mor vurgu */
+}
+
+/* Input ve Textarea */
+.input-field {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #1f1f2e;
+    color: #ffffff;
+}
+
+textarea {
+    resize: none;
+}
+
+/* Mesafe */
+#distance {
+    font-size: 14px;
+    color: #dddddd;
+}
+
+/* Buton Stili */
+button {
+    background-color: #9b59b6; /* Mor buton */
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #7d3c98; /* Daha koyu mor */
+}
+
+/* Marker çevresine animasyon */
+.highlighted-marker {
+    border: 3px solid red;
+    transition: border 0.3s ease;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    #map {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .card {
+        width: 90%;
+    }
+
+    button {
+        width: 100%;
+    }
+}

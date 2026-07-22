@@ -1,0 +1,39 @@
+/* Genel Stil */
+body {
+    background-color: #1f1f2e; /* Koyu arka plan */
+    color: #ffffff; /* Beyaz metin */
+    font-family: 'Electrolize', sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Başlık */
+h1 {
+    font-size: 2rem;
+    margin-top: 20px;
+    color: #9b59b6; /* Mor ton başlık */
+}
+
+/* Video ve Canvas */
+video, canvas {
+    border: 2px solid #9b59b6; /* Mor çerçeve */
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Hafif gölge */
+}
+
+/* Tespit Alanları */
+canvas {
+    position: relative;
+    z-index: 10;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    video, canvas {
+        width: 90%;
+        height: auto;
+    }
+}
+

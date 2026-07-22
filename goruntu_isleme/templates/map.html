@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+{%load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yol Planlama</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{% static 'css/map.css' %}">
+
+    <style>
+        .card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 15px;
+            width: 300px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Hover efektiyle kartı biraz büyüt */
+        }
+
+        .card-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-body {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .card-body p {
+            margin-bottom: 10px;
+        }
+
+        .card-body strong {
+            color: #333;
+        }
+
+        #cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Marker çevresine animasyon eklemek için */
+        .highlighted-marker {
+            border: 3px solid red;
+            transition: border 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yol Planlama</h1>
+    <div id="map" style="height: 600px;"></div>
+    <button id="calculateRoute">Yolu Hesapla</button>
+
+    <div id="cards-container"></div> <!-- Kartların yerleşeceği alan -->
+    <button id="saveRoute">Yolu Kaydet</button>
+    <script>
+        var map = L.map('map').setView([39.92077, 32.85411], 6); // Harita başlangıç merkezi
+
+        // OpenStreetMap harita katmanını ekleyelim
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var markers = []; // Noktaları tutacağımız dizi
+        var polyline;  // Polyline çizgisi için değişken
+
+        // Haritaya tıklanıldığında nokta ekleyelim
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            // Noktayı harita üzerinde ekleyelim
+            var marker = L.marker([lat, lon], {draggable: true}).addTo(map);
+            marker.bindPopup("Yeni Nokta").openPopup();
+
+            // Marker'ı 'markers' dizisine ekleyelim
+            markers.push(marker);
+
+            // Marker'ı tıklayarak kaldırma işlevi
+            marker.on('click', function() {
+                // Nokta tıklanınca haritadan sil
+                map.removeLayer(marker);
+                
+                // 'markers' dizisinden çıkar
+                var index = markers.indexOf(marker);
+                if (index > -1) {
+                    markers.splice(index, 1);
+                }
+
+                // Eğer çizgi varsa sil
+                if (polyline) {
+                    map.removeLayer(polyline);
+                }
+            });
+        });
+
+        // 'Yolu Hesapla' butonuna tıklanınca
+        $('#calculateRoute').click(function() {
+            var coordinates = markers.map(function(marker) {
+                return [marker.getLatLng().lat, marker.getLatLng().lng];
+            });
+
+            if (coordinates.length < 2) {
+                alert('En az iki nokta gereklidir!');
+                return;
+            }
+
+            $.ajax({
+                url: '/calculate-route/',
+                method: 'POST',
+                data: {
+                    'coordinates': JSON.stringify(coordinates),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    console.log(response.route);  // Yol sırasını görmek için logla
+
+                    // Yol sırasını çizme ve sıralı numara ekleme
+                    var route = response.route;
+                    var polylineCoords = [];
+
+                    // Kartları temizle
+                    $('#cards-container').empty();
+
+                    // Noktaları harita üzerinde sırayla işaretle ve kartları oluştur
+                    route.forEach(function(point, index) {
+                        var lat = point.coords[0];
+                        var lon = point.coords[1];
+
+                        // Polyline çizmek için koordinatları kaydet
+                        polylineCoords.push([lat, lon]);
+
+                        // Noktayı harita üzerinde işaretle ve sıra numarası ekle
+                        var marker = L.marker([lat, lon]).addTo(map).bindPopup("Nokta " + (index + 1));
+
+                        // Kart içeriklerini oluştur
+                        var cardContent = `
+                            <div class="card" data-index="${index}">
+                                <div class="card-header">
+                                    Nokta ${index + 1}
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Koordinatlar:</strong> (${lat.toFixed(4)}, ${lon.toFixed(4)})</p>
+                                    <p><strong>Açıklama:</strong> <input class="input-field" type="text" placeholder="Not ekleyin..."></p>
+                                    <p><strong>Mesafe:</strong> <span id="distance${index}">Henüz hesaplanmadı</span></p>
+                                </div>
+                            </div>
+                        `;
+
+                        // Kartı alt kısma ekleyin
+                        $('#cards-container').append(cardContent);
+
+                        // Mesafeyi hesapla ve güncelle
+                        if (index > 0) {
+                            var prevLat = route[index - 1].coords[0];
+                            var prevLon = route[index - 1].coords[1];
+                            var distance = L.latLng(prevLat, prevLon).distanceTo(L.latLng(lat, lon)); // Mesafeyi hesapla
+                            $('#distance' + index).text(distance.toFixed(2) + " metre");
+                        }
+
+                        // Kart üzerinde hover olduğunda haritadaki marker'a animasyon ekleyelim
+                        var card = $('.card[data-index="' + index + '"]');
+                        card.hover(function() {
+                            marker.getElement().classList.add('highlighted-marker');
+                        }, function() {
+                            marker.getElement().classList.remove('highlighted-marker');
+                        });
+                    });
+
+                    // Noktalar arasına çizgi çiz
+                    L.polyline(polylineCoords, {color: 'blue'}).addTo(map);
+                },
+                error: function(error) {
+                    alert('Bir hata oluştu: ' + error.responseJSON.error);
+                }
+            });
+        });
+
+
+        $('#saveRoute').click(function() {
+    var coordinates = markers.map(function(marker) {
+        return [marker.getLatLng().lat, marker.getLatLng().lng];
+    });
+
+    if (coordinates.length < 2) {
+        alert('En az iki nokta gereklidir!');
+        return;
+    }
+
+    var routeName = prompt("Güzergah adı girin: "); // Kullanıcıdan güzergah adı al
+
+    $.ajax({
+        url: '/save-route/',  // Kaydetme işlemi için backend'e gönderilen URL
+        method: 'POST',
+        data: JSON.stringify({
+            'name': routeName,
+            'coordinates': coordinates
+        }),
+        contentType: 'application/json',  // Veri formatı JSON olacak
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'  // CSRF token gönderilmesi gerekir
+        },
+        success: function(response) {
+            alert('Güzergah başarıyla kaydedildi!');
+            console.log(response);
+        },
+        error: function(error) {
+            alert('Bir hata oluştu: ' + error.responseJSON.error);
+        }
+    });
+});
+    </script>
+</body>
+</html>

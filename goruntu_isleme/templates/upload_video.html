@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{%load static %}
+
+<html>
+<head>
+    <title>Video Yükleme</title>
+    <link rel="stylesheet" href="{% static 'css/upload_video.css' %}">
+
+</head>
+<body>
+    <h1>Video Yükleme</h1>
+    <!-- upload_video.html -->
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Title alanı -->
+    <div>
+        <label for="id_title">Başlık:</label>
+        <input type="text" name="title" id="id_title" value="{{ form.title.value }}" required>
+    </div>
+
+    <!-- Description alanı -->
+    <div>
+        <label for="id_description">Açıklama:</label>
+        <textarea name="description" id="id_description" rows="4" required>{{ form.description.value }}</textarea>
+    </div>
+
+    <!-- Video dosyası alanı -->
+    <div>
+        <label for="id_video_file">Video Dosyası:</label>
+        <input type="file" name="video_file" id="id_video_file" required>
+    </div>
+
+    <button type="submit">Yükle</button>
+</form>
+
+
+</body>
+</html>
