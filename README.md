@@ -12,6 +12,7 @@ Drone ile çekilen video ve fotoğrafları işleyip nesne tespiti yapan bir web 
 - Drone videolarını yükleyip YOLO ile üzerinde nesne tespiti yapıyor (insan, araç vb.)
 - Güzergahları harita üzerinde gösteriyor
 - Dronelara ait bilgileri (kamera tipi, uçuş menzili vb.) kaydedebiliyorsun
+- Canlı nesne takibi yapabiliyorsun
 
 ## Kullanılan Teknolojiler
 
