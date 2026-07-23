@@ -1,47 +1,44 @@
+<div align="center">
 # NADA Drone Sistemleri
-
-"Gökyüzündeki gözünüz"
-
-Drone ile çekilen video ve fotoğrafları işleyip nesne tespiti yapan bir web uygulaması. Bitirme projem kapsamında Django ile geliştirdim.
+ 
+**"Gökyüzündeki gözünüz"**
+ 
+Drone ile çekilen video ve fotoğrafları işleyip YOLO ile nesne tespiti yapan, güzergah planlayan ve drone filosunu yöneten bir Django web uygulaması.
+ 
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=flat-square&logo=opencv&logoColor=white)](https://opencv.org/)
+[![YOLOv3](https://img.shields.io/badge/YOLOv3-Object%20Detection-yellow?style=flat-square)]()
+[![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=flat-square&logo=leaflet&logoColor=white)](https://leafletjs.com/)
 
 <img width="1885" height="926" alt="Ekran görüntüsü 2025-01-13 203514" src="https://github.com/user-attachments/assets/3fe732ac-a956-45d5-bdc9-031eeedf2048" />
 
+</div>
+---
 
-## Ne İşe Yarıyor
+## Proje Hakkında
+ 
+**NADA Drone Sistemleri**, drone ile çekilen video ve fotoğrafları işleyip üzerinde **YOLOv3** ile nesne tespiti (insan, araç vb.) yapan; uçuş güzergahları ve canlı nesne takip özelliklerini tek bir panelde toplayan bir bitirme (tez) projesidir. Django ile geliştirilmiştir.
 
-- Drone videolarını yükleyip YOLO ile üzerinde nesne tespiti yapıyor (insan, araç vb.)
-- Güzergahları harita üzerinde gösteriyor
-- Dronelara ait bilgileri (kamera tipi, uçuş menzili vb.) kaydedebiliyorsun
-- Canlı nesne takibi yapabiliyorsun
+## Özellikler
+ 
+- 🎥 **Video Analizi** — Yüklenen drone videoları YOLOv3 ile işlenir, nesneler tespit edilir tespit edilen nesnelerin etiketi ile işlenmiş video kaydedilir
+- 📊 **Video Raporu** — Tespit edilen nesnelerin dağılımı Matplotlib ile pasta grafiği olarak sunulur
+- 🗺️ **Güzergah Planlama** — Harita üzerinde seçilen noktalar arasında **A\* algoritması** ile en kısa rota hesaplanır ve kaydedilir
+- 📡 **Canlı Takip** — Gerçek zamanlı nesne takibi sayfası (Bilgisayar kamerasından gerçek zamanlı olarak nesne tespiti)
+- 🚁 **Drone Filosu Yönetimi** — Kamera tipi, uçuş menzili, güç türü, koruma derecesi gibi teknik bilgilerin kaydı
 
 ## Kullanılan Teknolojiler
 
-- Python / Django
-- OpenCV + YOLOv3
-- Leaflet (harita için)
-- HTML / CSS
+| Katman | Teknoloji |
+|---|---|
+| Backend | Python, Django |
+| Nesne Tespiti | OpenCV (`cv2.dnn`), YOLOv3 |
+| Veri Görselleştirme | Matplotlib, Plotly |
+| Harita | Leaflet |
+| Rota Hesaplama | A* (A-Star) algoritması |
+| Arayüz | HTML / CSS |
 
-## Kurulum
+> **YOLOv3 ağırlık dosyası:** `yolov3.weights` dosyası boyutu nedeniyle repoya eklenmemiştir.
 
-```
-git clone https://github.com/nazyi/Goruntu-Isleme-Tez.git
-cd Goruntu-Isleme-Tez
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-YOLOv3'ün ağırlık dosyası (`yolov3.weights`) boyutu yüzünden repoya eklenmedi. Resmi kaynaktan indirip şu klasöre atman lazım:
-```
-goruntu_isleme/static/yolov3.weights
-```
-
-Sonra:
-```
-python manage.py runserver
-```
-
-## Not
-
-Bitirme projesi olarak geliştirildi, hâlâ üzerinde çalışıyorum.
 
