@@ -3,13 +3,15 @@
 # NADA Drone Sistemleri
  
 **"Gökyüzündeki gözünüz"**
- 
+
+</div>
+
 Drone ile çekilen video ve fotoğrafları işleyip YOLO ile nesne tespiti yapan, güzergah planlayan ve drone filosunu yöneten bir Django web uygulaması.
  
 
 <img width="1885" height="926" alt="Ekran görüntüsü 2025-01-13 203514" src="https://github.com/user-attachments/assets/3fe732ac-a956-45d5-bdc9-031eeedf2048" />
 
-</div>
+
 
 ---
 
